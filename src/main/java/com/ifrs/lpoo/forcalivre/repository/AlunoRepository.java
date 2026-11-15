@@ -26,7 +26,7 @@ public class AlunoRepository {
   private static final String DELIMITER = ";";
 
   /**
-   * Busca todos os alunos da Força Livre no arquivo planos.csv.
+   * Busca todos os alunos da Força Livre no arquivo alunos.csv.
    */
   // TODO: Refatorar
   public List<Aluno> buscarTodos(PlanoRepository planoRepository) {
