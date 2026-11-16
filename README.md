@@ -4,67 +4,120 @@ Sistema para auxiliar o box de treinamento funcional **Força Livre** a controla
 
 Projeto desenvolvido por Edson Mendes e Igor Santos na disciplina Linguagem de Programação Orientada a Objetos.
 
-## Funcionalidades para o usuário
+## Requisitos funcionais
 - Cadastrar aluno
 - Consultar plano
+- Cadastrar modalidade
+- Cadastrar Instrutor
+- Cadastrar aula
 - Listar alunos
 - Listar planos
+- Listar cadastros
 
-## Funcionalidades internas da aplicação
-- Carregar Alunos de um arquivo
-- Carregar Planos de um arquivo
-- Carregar Aulas de um arquivo
-
-## Regras de negócio
-
-##### Aluno
-- Alunos não devem possuir mesmo **id**.
-- Alunos não devem possuir mesmo **cpf**.
-
-##### Aula
-- Aulas não devem possuir mesmo **id**.
-
-##### Plano
-- Planos não devem possuir mesmo **id**.
-
-##### Aula Agendada
-- AulaAgendadas não devem possuir mesmo **id** 
-
-## Definições
-- Entidades são guardadas em arquivo .csv
-- Um arquivo para cada entidade a ser persistida
-
-## Classes
+## Diagrama de classes
 
 ```mermaid
 classDiagram
-    class Identificador {
-        -Long id
-    }
+    class Pessoa {
+        -String nome
+        -int id
+        
+        +Pessoa(nome, id)
+        +getID() int
+        +getNome() String
+    }   
     
     class Aluno {
-        -String cpf
-        -String nome
-        -LocalDate dataNascimento
-        -Plano plano
+        +Aluno(id, nome, plano)
+        +getPlano() Plano
+        +setPlano(Plano plano) void
+    }
+
+    class Instrutor {
+        +Instrutor(nome, id)
     }
 
     class Plano {
+        -int id
         -String nome
+        -int duracao
+        
+        +Plano(id, nome, duracao)
+        +getId() int
+        +getNome() String
+        +getDuracao() int
     }
 
     class Aula {
-        -String nome
-        -String descricao
+        -int id
+        -int capacidade
+        -LocalDateTime horario
+
+        +Aula(id, modalidade, instrutor, horario, capacidade)
+        +getId() int
+        +getCapacidade() int
+        +getHorario() LocalDateTime
+        +getModalidade() Modalidade
+        +getInstrutor() Instrutor
     }
 
-    class AulaAgendada {
-        -Aula aula
-        -LocalDate data
-        -List alunos
+    class Reserva {
+        -int id
+        -boolean presente
+        
+        +Reserva(id, aluno, aula)
+        +getId() int
+        +getPresente() int
+        +getAluno() Aluno
+        +getAula() Aula
+        +registrarPresenca() void
     }
-    Identificador <|-- Aluno
-    Identificador <|-- Aula
-    Identificador <|-- Plano
-    Identificador <|-- AulaAgendada
+
+    class Modalidade {
+        -int id
+        -String nome
+        -String descricao
+        
+        +Modalidade(id, nome, descricao)
+        +getId() int
+        +getNome() String
+        +getDescricao() String
+    }
+    
+    class Gerenciavel {
+        <<interface>>
+        
+        +cadAluno(Aluno aluno) void
+        +cadPlano(Plano plano) void
+        +cadModalidade(Modalidade modalidade) void
+        +cadInstrutor(Instrutor instrutor) void
+        +cadAula(Aula aula) void
+        +listarAlunos() List<Aluno> 
+        +listarPlanos() List<Plano> 
+        +listarModalidades() List<Modalidade> 
+        +listarInstrutores() List<Instrutor> 
+        +listarAulas()  List<Aula>
+    }
+    
+    class Sistema {
+        +listarReservas() List
+        +buscarPlano() Plano
+        +buscarModalidade() Modalidade
+        +buscarInstrutor() Instrutor
+    }
+    
+    Pessoa <|-- Aluno
+    Pessoa <|-- Instrutor
+    Aluno "*" -- "1" Plano
+    Reserva "*" -- "1" Aluno
+    Reserva "*" -- "1" Aula
+    Aula "*" -- "1" Modalidade
+    Aula "*" -- "1" Instrutor
+    Sistema --|> Gerenciavel
+    Sistema "1..1" -- "*" Aluno 
+    Sistema "1..1" -- "*" Instrutor
+    Sistema "1..1" -- "*" Plano
+    Sistema "1..1" -- "*" Aula
+    Sistema "1..1" -- "*" Modalidade
+    Sistema "1..1" -- "*" Reserva
 ```
